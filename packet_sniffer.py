@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import scapy.all as scapy
 import argparse
+from scapy_http import http as http
 
 def parse_arguments():
     parser = argparse.ArgumentParser()
@@ -9,11 +10,17 @@ def parse_arguments():
     return options
 
 
+def process_sniffed_packet(packet):
+    
+    if(packet.haslayer(http.HTTPRequest)):
+        print(packet)
+        
+
 def sniff(interface):
-    scapy.sniff(iface=interface,store=False,prn = lambda x: x.summary())
+    scapy.sniff(iface=interface,prn = process_sniffed_packet)
 
 
-#Parse the arguments
+#  Parse the arguments
 options = parse_arguments()
 interface_specified = options.interface
 
